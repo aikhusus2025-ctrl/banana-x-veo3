@@ -38,7 +38,7 @@ export const sendChatMessage = async (chat: Chat, prompt: string, images: FileCo
 
 export const generateVideo = async (prompt: string, image?: FileConversionResult): Promise<string> => {
   let operation = await ai.models.generateVideos({
-    model: 'veo-2.0-generate-001',
+    model: 'veo-3.0-generate-preview',
     prompt: prompt,
     ...(image && { 
       image: { 
@@ -131,7 +131,7 @@ export const generateDetailedPrompt = async (prompt: string, images: FileConvers
     },
   }));
   
-  const systemInstruction = "You are a world-class prompt engineer for generative AI. Your task is to analyze the user's idea and any reference images, then combine them into a single, cohesive, highly-detailed prompt. After creating the prompt, analyze it. If the prompt contains instructions for creating a video (e.g., '8-second video', 'pan left', cinematic terms), classify its intent as 'VIDEO'. Otherwise, if it primarily describes a static scene, classify it as 'IMAGE'.";
+  const systemInstruction = "You are a world-class prompt engineer for generative AI. Your task is to analyze the user's idea and any reference images, then combine them into a single, cohesive, detailed prompt suitable for an advanced AI model. Also, classify whether the prompt's intent is for an IMAGE or a VIDEO.";
 
   const userMessage = `User's idea: "${prompt}". Please analyze the provided images and this idea to generate the detailed prompt and classify its intent.`;
   
@@ -188,12 +188,12 @@ export const regenerateDetailedPrompt = async (originalIdea: string, previousPro
     },
   }));
   
-  const systemInstruction = `You are a world-class prompt engineer for generative AI. Your task is to analyze the user's idea, any reference images, and a previous prompt you generated. Then, create a new, distinct, and equally detailed prompt based on the same core idea. After creating the new prompt, classify its intent as 'VIDEO' if it contains motion instructions, otherwise classify it as 'IMAGE'.`;
+  const systemInstruction = `You are a world-class prompt engineer for generative AI. Your task is to analyze the user's idea, any reference images, and a previous prompt you generated. Then, create a creative variation of the previous prompt, ensuring it's still suitable for advanced AI models. Also, classify whether the new prompt's intent is for an IMAGE or a VIDEO.`;
 
   const userMessage = `User's original idea: "${originalIdea}".
 The previous prompt you generated was: "${previousPrompt}".
 Please generate a creative variation of that prompt. Do not just rephrase it; create a distinct alternative while keeping the core subject and style. Analyze any provided images for additional context.`;
-  
+
   const response = await ai.models.generateContent({
     model: modelConfig.modelId,
     contents: {
